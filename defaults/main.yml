@@ -2,10 +2,10 @@
 # defaults file for windows_desktop_patching
 
 
-# Categories of Windows updates to install
+# Categories of Windows updates to install (recommended for monthly patching)
 windows_patch_categories:
-	- CriticalUpdates
 	- SecurityUpdates
+	- CriticalUpdates
 	- UpdateRollups
 
 # Whether to reboot automatically after updates

@@ -43,9 +43,6 @@
     - package_diff.stdout is defined
     - package_diff.stdout != ''
 
-- name: Log update results
-  win_shell: |
-    Write-Output "{{ update_result }}" | Out-File -FilePath {{ windows_patch_log_file }} -Append
 
 - name: Reboot if required
   win_reboot:
