@@ -1,5 +1,5 @@
 ---
-dependency: []
+ 
 galaxy_info:
   author: Greg Heffner
   description: Ansible role for patching Windows desktops
