@@ -1,0 +1,6 @@
+---
+- name: Patch Windows desktops
+  hosts: windows
+  gather_facts: no
+  roles:
+    - role: windows_desktop_patching

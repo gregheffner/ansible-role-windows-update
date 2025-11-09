@@ -1,0 +1,53 @@
+---
+# tasks file for windows_desktop_patching
+- name: Gather facts
+  ansible.builtin.setup:
+  when: windows_patch_gather_facts | bool
+
+- name: Retrieve installed packages information before update
+  win_shell: |
+    $packages = Get-WmiObject -Class Win32_Product
+    $packageInfo = $packages | Select-Object Name, Version, @{Name="LastUpdate"; Expression={(Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" | Where-Object { $_.DisplayName -eq $_.Name }).InstallDate}}
+    $packageInfo | ConvertTo-Json -Compress
+  register: package_info_before
+  when: windows_patch_report_diff | bool
+
+- name: Install Windows updates
+  win_updates:
+    category_names: "{{ windows_patch_categories }}"
+    reboot: "{{ windows_patch_reboot }}"
+  register: update_result
+
+- name: Retrieve installed packages information after update
+  win_shell: |
+    $packages = Get-WmiObject -Class Win32_Product
+    $packageInfo = $packages | Select-Object Name, Version, @{Name="LastUpdate"; Expression={(Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" | Where-Object { $_.DisplayName -eq $_.Name }).InstallDate}}
+    $packageInfo | ConvertTo-Json -Compress
+  register: package_info_after
+  when: windows_patch_report_diff | bool
+
+- name: Find differences in packages
+  win_shell: |
+    $before = ConvertFrom-Json '{{ package_info_before.stdout }}'
+    $after = ConvertFrom-Json '{{ package_info_after.stdout }}'
+    $diff = Compare-Object -ReferenceObject $before -DifferenceObject $after -Property Name, Version, LastUpdate
+    $diff | ConvertTo-Json -Compress
+  register: package_diff
+  when: windows_patch_report_diff | bool
+
+- name: Display differences in packages
+  debug:
+    msg: "{{ package_diff.stdout | default('{}') | from_json }}"
+  when:
+    - windows_patch_report_diff | bool
+    - package_diff.stdout is defined
+    - package_diff.stdout != ''
+
+- name: Log update results
+  win_shell: |
+    Write-Output "{{ update_result }}" | Out-File -FilePath {{ windows_patch_log_file }} -Append
+
+- name: Reboot if required
+  win_reboot:
+    msg: "Rebooting to complete patch installation."
+  when: update_result.reboot_required | default(false)

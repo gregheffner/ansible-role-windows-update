@@ -1,0 +1,21 @@
+---
+# defaults file for windows_desktop_patching
+
+
+# Categories of Windows updates to install
+windows_patch_categories:
+	- CriticalUpdates
+	- SecurityUpdates
+	- UpdateRollups
+
+# Whether to reboot automatically after updates
+windows_patch_reboot: true
+
+# Path to log file for patch results
+windows_patch_log_file: C:\\patch_results.txt
+
+# Whether to gather facts before patching
+windows_patch_gather_facts: true
+
+# Whether to compare and report package differences
+windows_patch_report_diff: true
