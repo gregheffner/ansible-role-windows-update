@@ -1,12 +1,12 @@
 ---
 dependency: []
 galaxy_info:
-	author: Greg Heffner
-	description: Ansible role for patching Windows desktops
-	company: Greg Heffner
-	license: MIT
-	min_ansible_version: 2.9
-	platforms:
-		- name: Windows
-			versions:
-				- all
+  author: Greg Heffner
+  description: Ansible role for patching Windows desktops
+  company: Greg Heffner
+  license: MIT
+  min_ansible_version: "2.9"
+  platforms:
+    - name: Windows
+      versions:
+        - all
