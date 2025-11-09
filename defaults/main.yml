@@ -4,9 +4,9 @@
 
 # Categories of Windows updates to install (recommended for monthly patching)
 windows_patch_categories:
-	- SecurityUpdates
-	- CriticalUpdates
-	- UpdateRollups
+  - SecurityUpdates
+  - CriticalUpdates
+  - UpdateRollups
 
 # Whether to reboot automatically after updates
 windows_patch_reboot: true
